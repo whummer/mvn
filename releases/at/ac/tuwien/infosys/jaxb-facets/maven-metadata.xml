@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>at.ac.tuwien.infosys</groupId>
+  <artifactId>jaxb-facets</artifactId>
+  <versioning>
+    <release>2.2.7-facets</release>
+    <versions>
+      <version>2.2.7-facets</version>
+    </versions>
+    <lastUpdated>20130621093629</lastUpdated>
+  </versioning>
+</metadata>
