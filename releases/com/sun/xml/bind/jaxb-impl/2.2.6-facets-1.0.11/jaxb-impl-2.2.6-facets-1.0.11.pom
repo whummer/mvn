@@ -29,68 +29,111 @@
 	<parent>
 		<groupId>at.ac.tuwien.infosys</groupId>
 		<artifactId>jaxb-facets</artifactId>
-		<version>2.2.7-facets-1.1.0</version>
+		<version>2.2.7-facets-1.0.11</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>javax.xml.bind</groupId>
-	<artifactId>jaxb-api</artifactId>
-	<version>${jaxb.facets.api.version}</version>
+	<groupId>com.sun.xml.bind</groupId>
+	<artifactId>jaxb-impl</artifactId>
+	<version>${jaxb.facets.impl.version}</version>
 	<packaging>jar</packaging>
 
-	<name>Java Architecture for XML Binding</name>
-	<description>JAXB (JSR 222) API</description>
-	<url>http://jaxb.java.net/</url>
+	<developers>
+		<developer>
+			<name>Waldemar Hummer</name>
+			<email>hummer@dsg.tuwien.ac.at</email>
+			<organization>Vienna University of Technology</organization>
+		</developer>
+		
+		<developer>
+			<name>Jason Pell</name>
+			<email>jason@pellcorp.com</email>
+		</developer>
+	</developers>
+
+	<licenses>
+		<license>
+			<name>CDDL 1.1</name>
+			<url>https://glassfish.java.net/public/CDDL+GPL_1_1.html</url>
+			<distribution>repo</distribution>
+		</license>
+		<license>
+			<name>GPL2 w/ CPE</name>
+			<url>https://glassfish.java.net/public/CDDL+GPL_1_1.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<profiles>
+		<profile>
+			<id>regular</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<version>2.5.1</version>
+						<executions>
+							<execution>
+								<id>unpack</id>
+								<phase>process-sources</phase>
+								<goals>
+									<goal>unpack</goal>
+								</goals>
+								<configuration>
+									<artifactItems>
+										<artifactItem>
+											<groupId>com.sun.xml.bind</groupId>
+											<artifactId>jaxb-impl</artifactId>
+											<version>2.2.6</version>
+										</artifactItem>
+									</artifactItems>
+									<outputDirectory>${project.build.directory}/classes</outputDirectory>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>delete</id>
+								<phase>process-sources</phase>
+								<configuration>
+									<tasks>
+										<delete dir="${project.build.directory}/classes/META-INF/maven" />
+									</tasks>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.12</version>
+						<configuration>
+							<systemPropertyVariables>
+								<java.endorsed.dirs>
+									${settings.localRepository}/javax/xml/bind/jaxb-api/${jaxb.facets.api.version}/:${settings.localRepository}/com/sun/xml/bind/jaxb-impl/${jaxb.facets.impl.version}/
+								</java.endorsed.dirs>
+							</systemPropertyVariables>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 	<build>
 		<plugins>
-			<!-- this plugin is required to ensure that the jaxb-api that is produced includes
-			all class files, not just the ones in the src/main/java -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.5.1</version>
-				<executions>
-					<execution>
-						<id>unpack</id>
-						<phase>process-sources</phase>
-						<goals>
-							<goal>unpack</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>javax.xml.bind</groupId>
-									<artifactId>jaxb-api</artifactId>
-									<version>2.2.7</version>
-								</artifactItem>
-							</artifactItems>
-							<outputDirectory>${project.build.directory}/classes</outputDirectory>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
-			<!-- This ensures that the META-INF does not include the maven directory extracted from
-			the jaxb-api from maven central -->
-			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>delete</id>
-						<phase>process-sources</phase>
-						<configuration>
-							<tasks>
-								<delete dir="${project.build.directory}/classes/META-INF/maven" />
-							</tasks>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -101,7 +144,13 @@
 							<Specification-Title>Java Architecture for XML Binding</Specification-Title>
 							<Specification-Version>2.2.7</Specification-Version>
 							<Specification-Vendor>Oracle Corporation</Specification-Vendor>
-							<Extension-Name>javax.xml.bind</Extension-Name>
+							<Implementation-Title>JAXB Reference Implementation (including JAXB-Facets support)</Implementation-Title>
+							<Implementation-Version>2.2.6</Implementation-Version>
+							<Implementation-Vendor>Oracle Corporation</Implementation-Vendor>
+							<Implementation-Vendor-Id>com.sun</Implementation-Vendor-Id>
+							<Extension-Name>com.sun.xml.bind</Extension-Name>
+							<Build-Id>${project.artifactId} ${project.version}</Build-Id>
+							<Class-Path>jaxb-api.jar</Class-Path>
 						</manifestEntries>
 					</archive>
 				</configuration>
@@ -143,12 +192,42 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
-			<version>2.2.7</version>
+			<version>${jaxb.facets.api.version}</version>
 		</dependency>
+
+		<dependency>
+        	<groupId>com.pellcorp.jaxb-facets</groupId>
+    		<artifactId>testutils</artifactId>
+    		<version>0.2</version>
+    		<scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+			<version>2.2.6</version>
+			<scope>test</scope>
+        </dependency>
 	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.sun.istack</groupId>
+				<artifactId>istack-commons-runtime</artifactId>
+				<version>2.13</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.sun.xml.fastinfoset</groupId>
+				<artifactId>FastInfoset</artifactId>
+				<version>1.2.12</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>
