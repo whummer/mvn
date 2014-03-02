@@ -3,10 +3,11 @@
   <groupId>com.sun.xml.bind</groupId>
   <artifactId>jaxb-impl</artifactId>
   <versioning>
-    <release>2.2.6-facets-1.1.0</release>
+    <release>2.2.6-facets-1.2.0</release>
     <versions>
       <version>2.2.6-facets-1.1.0</version>
+      <version>2.2.6-facets-1.2.0</version>
     </versions>
-    <lastUpdated>20140218171223</lastUpdated>
+    <lastUpdated>20140302191112</lastUpdated>
   </versioning>
 </metadata>
